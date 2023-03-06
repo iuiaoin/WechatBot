@@ -26,19 +26,23 @@ def OpenaiServer(msg=None):
             output(f'ERROR：msg is None')
             msg = ""
         else:
-            response = openai.Completion.create(
-                model="text-davinci-003",
-                prompt=str(msg),
+            response = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": "你是ChatGPT, 一个由OpenAI训练的大型语言模型, 你旨在回答并解决人们的任何问题，并且可以使用多种语言与人交流。"},
+                    {"role": "user", "content": str(msg)}
+                ],
                 temperature=0.6,
-                max_tokens=600,
+                max_tokens=1000,
                 top_p=1.0,
                 frequency_penalty=0.0,
                 presence_penalty=0.0,
             )
-            msg = "来自openai回复结果：\n"
-            msg += response.choices[0].text
-            msg += "\n\rCreate by openai server"
+            # msg = "来自openai回复结果：\n"
+            msg = response.choices[0]['message']['content']
+            # msg += "\n\rCreate by openai server"
     except Exception as e:
-        output(f"ERROR：{e.message}")
+        output(f"ERROR：{e}")
         msg = e
     return msg
+

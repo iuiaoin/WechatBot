@@ -276,8 +276,10 @@ def handle_recv_msg(msgJson):
     nickname = get_member_nick(roomid, senderid)
     if roomid:
         if keyword == "test" and senderid in admin_id.split(","):
-            msg = "Server is Online"
-            ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
+            msg = ai_reply(keyword)
+            ws.send(send_msg(msg, wxid=roomid))
+            # msg = "Server is Online"
+            # ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
             # 这里是群消息的回复
         elif keyword == "鸡汤" and roomid not in blacklist_room_id.split(","):
             msg = get_chicken_soup()
@@ -360,9 +362,10 @@ def handle_recv_msg(msgJson):
             else:
                 msg = ""
             ws.send(send_msg(msg, wxid=roomid))
-        elif keyword.startswith("Hey") or keyword.startswith("hey"):
-            msg = OpenaiServer(keyword.replace("Hey", "")).replace("hey", "").replace("\n\n", "\n")
-            ws.send(send_msg(msg, wxid=roomid))
+        elif keyword.startswith("@ChatGPT"):
+            msg = OpenaiServer(keyword.replace("@ChatGPT", "")).replace("\n\n", "\n")
+            # ws.send(send_msg(msg, wxid=roomid))
+            ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
         elif keyword.startswith("端口扫描") or keyword.startswith("端口查询") or keyword.startswith("port"):
             msg = PortScan(keyword.replace("端口扫描", "").replace("端口查询", "").replace("port", "").replace(" ", ""))
             ws.send(send_msg(msg, wxid=roomid))
